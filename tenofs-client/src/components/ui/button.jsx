@@ -1,12 +1,20 @@
-import React from "react";
+import React from 'react';
+import classNames from 'classnames';
 
-export function Button({ children, className = "", ...props }) {
+export const Button = ({ children, variant = 'default', className = '', ...props }) => {
+  const baseStyles = 'rounded-xl px-4 py-2 font-medium transition-all';
+  const variants = {
+    default: 'bg-purple-600 text-white hover:bg-purple-700',
+    outline: 'border border-purple-600 text-purple-600 hover:bg-purple-50',
+    ghost: 'text-purple-600 hover:underline'
+  };
+
   return (
     <button
-      className={`px-5 py-2 rounded-full text-white font-semibold bg-gradient-to-tr from-pink-500 to-purple-600 hover:from-purple-600 hover:to-pink-500 transition-all shadow-md ${className}`}
+      className={classNames(baseStyles, variants[variant] || variants.default, className)}
       {...props}
     >
       {children}
     </button>
   );
-}
+};

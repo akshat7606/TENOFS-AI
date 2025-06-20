@@ -1,13 +1,12 @@
-import React from "react";
+import React from 'react';
+import classNames from 'classnames';
 
-export function Card({ children, className = "" }) {
+export const Card = ({ children, className = '' }) => {
   return (
-    <div className={`bg-white rounded-2xl shadow-xl p-4 ${className}`}>
-      {children}
-    </div>
+    <div className={classNames('bg-white bg-opacity-80 shadow-lg rounded-2xl backdrop-blur-md', className)}>{children}</div>
   );
-}
+};
 
-export function CardContent({ children, className = "" }) {
-  return <div className={`p-2 ${className}`}>{children}</div>;
-}
+export const CardContent = ({ children, className = '' }) => {
+  return <div className={classNames('p-6', className)}>{children}</div>;
+};

@@ -4,17 +4,16 @@
 import React, {createContext, useState, useEffect,useContext } from "react";
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from "react-router-dom";
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, collection, addDoc, getDocs, query, where } from "firebase/firestore";
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
-import { Card, CardContent } from "./components/ui/card";
 import './styles.css';
-import { useLocation } from "react-router-dom";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import TryItFirstPage from "./components/ui/TryItFirstPage"; // Update the path as needed
-
-
+import { Layout } from "./components/ui/layout";
+import { Navigate } from "react-router-dom";
+import { Header } from "./components/ui/header"; // Use named import
+import LandingPage from "./components/ui/LandingPage"; // Adjust the path if necessary // Adjust the path if necessary
+import RoleLandingPage from "./components/ui/RoleLandingPage"; // Adjust the path if necessary// Import the new page
 
 // Firebase config
 const firebaseConfig = {
@@ -33,10 +32,13 @@ const db = getFirestore(app);
 
 
 function RoleSelectionPage() {
+  const { setRole } = useRole();
   const navigate = useNavigate();
 
   const handleRoleSelection = (role) => {
-    navigate(`/${role}`);
+    console.log("Selected Role:", role); // Debugging
+    setRole(role); // Set the role in context
+    navigate("/role-landing"); // Redirect to the RoleLandingPage
   };
 
   return (
@@ -55,10 +57,13 @@ function RoleSelectionPage() {
   );
 }
 
+
+// Create Role Context
 const RoleContext = createContext();
 
+// RoleProvider Component
 export const RoleProvider = ({ children }) => {
-  const [role, setRole] = useState(null); // Role can be "Tenant" or "Owner"
+  const [role, setRole] = useState(null); // Role can be "tenant" or "owner"
 
   return (
     <RoleContext.Provider value={{ role, setRole }}>
@@ -67,215 +72,211 @@ export const RoleProvider = ({ children }) => {
   );
 };
 
+// Custom Hook to Use Role Context
 export const useRole = () => useContext(RoleContext);
 
-function LandingPage() {
-  const location = useLocation();
-  const navigate = useNavigate(); // Add navigate hook
-  const role = location.pathname.includes("tenant") ? "Owner" : "Tenant";
-
-  const handleTryItFirst = () => {
-    navigate("/try-it-first"); // Navigate to the "Try It First" page
-  };
-
-  return (
-    <section className="page">
-      <h1>Welcome to Tenofs</h1>
-      <p>Your trusted {role.toLowerCase()} review and trust score system</p>
-      <div>
-        <Link to="/login"><button className="primary">Login</button></Link>
-        <Link to="/signup"><button className="primary">Sign Up</button></Link>
-        <button className="primary" onClick={handleTryItFirst}>Try It First</button>
-      </div>
-    </section>
-  );
-}
-
-function LoginPage() {
+function LoginPage({ setIsAuthenticated }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    // Validation logic
-    if (!email || !password) {
-      alert("Email and Password are mandatory!");
-      return;
-    }
-
+  const handleLogin = async (e) => {
+    e.preventDefault();
+  
     try {
+      // Attempt to sign in with email and password
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard");
+      setIsAuthenticated(true); // Update authentication state
+      navigate("/dashboard"); // Redirect to dashboard
     } catch (error) {
-      alert("Login failed: " + error.message);
+      console.error("Login failed:", error); // Log the exact error
+  
+      // Handle specific Firebase Authentication errors
+      switch (error.code) {
+        case "auth/user-not-found":
+          alert("No user found with this email. Please check your email or sign up.");
+          break;
+        case "auth/wrong-password":
+          alert("Incorrect password. Please try again.");
+          break;
+        case "auth/invalid-email":
+          alert("The email address is invalid. Please enter a valid email.");
+          break;
+        case "auth/too-many-requests":
+          alert("Too many failed login attempts. Please try again later.");
+          break;
+        default:
+          alert("Login failed. Please try again.");
+      }
     }
   };
 
   return (
     <section className="page login-page">
-      <h2>Login</h2>
-      <p>Access your account</p>
-      <div className="form">
+      <h2 className="text-center text-2xl font-bold mb-6">Login</h2>
+      <form onSubmit={handleLogin} className="login-form">
+        <label htmlFor="email" className="form-label">
+          Email
+        </label>
         <input
+          id="email"
           type="email"
-          placeholder="Email"
+          placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
+          className="input-field"
         />
+        <label htmlFor="password" className="form-label">
+          Password
+        </label>
         <input
+          id="password"
           type="password"
-          placeholder="Password"
+          placeholder="Enter your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
+          className="input-field"
         />
-        <button onClick={handleLogin}>Login</button>
-      </div>
+        <button type="submit" className="btn primary">
+          Login
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate("/signup")}
+          className="btn secondary"
+        >
+          Sign Up
+        </button>
+      </form>
     </section>
   );
 }
 
-function SignupPage() {
+function SignupPage({ setIsAuthenticated }) {
+  const navigate = useNavigate();
+  const { role } = useRole(); // Get the selected role from context
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     pan: "",
     password: "",
-    agreement: null, // Rent agreement file
   });
-  const [flatDetails, setFlatDetails] = useState(null); // Fetched flat details
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  const navigate = useNavigate();
 
-  const storage = getStorage(app);
-
-  const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-    const storageRef = ref(storage, `agreements/${file.name}`);
-
-    try {
-      await uploadBytes(storageRef, file);
-      const fileURL = await getDownloadURL(storageRef);
-      setFormData({ ...formData, agreement: fileURL });
-
-      // Simulate fetching flat details from the uploaded file
-      setFlatDetails({
-        address: "123 Main Street, City",
-        tenant: "John Doe",
-        owner: "Jane Smith",
-      });
-    } catch (error) {
-      console.error("File Upload Error:", error);
-      alert("Failed to upload file. Please try again.");
-    }
-  };
-
-  const handleSignup = async () => {
-    const { name, email, phone, pan, password, agreement } = formData;
-
+  const handleSignup = async (e) => {
+    e.preventDefault();
+  
     // Validation logic
-    if (!name || !email || !phone || !pan || !password || !agreement) {
+    if (!formData.name || !formData.email || !formData.phone || !formData.pan || !formData.password) {
       alert("All fields are mandatory");
       return;
     }
-
+  
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      await addDoc(collection(db, "users"), { ...formData, flatDetails });
+      // Create user with Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = userCredential.user;
+  
+      // Save user details and role to Firestore
+      await addDoc(collection(db, "users"), {
+        uid: user.uid,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        pan: formData.pan,
+        role: role, // Save the selected role (tenant or owner)
+      });
+  
+      // Set authentication state and redirect to dashboard
+      setIsAuthenticated(true);
       navigate("/dashboard");
     } catch (error) {
-      console.error("Signup Error:", error); // Log the error to the console
-      alert("Signup failed: " + error.message);
+      console.error("Signup failed:", error);
+    
+      if (error.code === "auth/email-already-in-use") {
+        alert("This email is already registered. Please use a different email.");
+      } else if (error.code === "auth/weak-password") {
+        alert("The password is too weak. Please use a stronger password.");
+      } else if (error.code === "auth/invalid-email") {
+        alert("The email address is invalid. Please enter a valid email.");
+      } else if (error.message.includes("PERMISSION_DENIED")) {
+        alert("You do not have permission to perform this action. Please check your Firestore rules.");
+      } else {
+        alert("Signup failed. Please try again.");
+      }
     }
   };
 
   return (
     <section className="page signup-page">
-      <h2>Sign Up</h2>
-      <p>Create your account</p>
-      <div className="form">
+      <h2 className="text-center text-2xl font-bold mb-6">Sign Up</h2>
+      <form onSubmit={handleSignup} className="signup-form">
+        <label htmlFor="name" className="form-label">
+          Full Name
+        </label>
         <input
+          id="name"
           type="text"
-          placeholder="Full Name*"
+          placeholder="Enter your full name"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          required
+          className="input-field"
         />
+        <label htmlFor="email" className="form-label">
+          Email
+        </label>
         <input
+          id="email"
           type="email"
-          placeholder="Email*"
+          placeholder="Enter your email"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          required
+          className="input-field"
         />
+        <label htmlFor="phone" className="form-label">
+          Phone Number
+        </label>
         <input
+          id="phone"
           type="text"
-          placeholder="Phone Number*"
+          placeholder="Enter your phone number"
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          required
+          className="input-field"
         />
+        <label htmlFor="pan" className="form-label">
+          PAN ID
+        </label>
         <input
+          id="pan"
           type="text"
-          placeholder="PAN ID*"
+          placeholder="Enter your PAN ID"
           value={formData.pan}
           onChange={(e) => setFormData({ ...formData, pan: e.target.value })}
+          required
+          className="input-field"
         />
+        <label htmlFor="password" className="form-label">
+          Password
+        </label>
         <input
-          type="file"
-          placeholder="Upload Rent Agreement*"
-          onChange={handleFileUpload}
+          id="password"
+          type="password"
+          placeholder="Enter your password"
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          required
+          className="input-field"
         />
-        {flatDetails && (
-          <div className="flat-details">
-            <p><strong>Flat Address:</strong> {flatDetails.address}</p>
-            <p><strong>Tenant:</strong> {flatDetails.tenant}</p>
-            <p><strong>Owner:</strong> {flatDetails.owner}</p>
-          </div>
-        )}
-        <div className="password-field">
-          <input
-            type={showPassword ? "text" : "password"} // Toggle between "text" and "password"
-            placeholder="Password*"
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          />
-          <span
-            className="eye-icon"
-            onClick={() => setShowPassword(!showPassword)} // Toggle visibility
-          >
-            {showPassword ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm-3 9c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.418 0-8-3.582-8-8s3.582-8 8-8c1.125 0 2.2.225 3.188.625M15 12a3 3 0 11-6 0 3 3 0 016 0zm6.825 3.188A10.05 10.05 0 0119 12c0-1.125-.225-2.2-.625-3.188"
-                />
-              </svg>
-            )}
-          </span>
-        </div>
-        <button onClick={handleSignup}>Sign Up</button>
-      </div>
+        <button type="submit" className="btn primary">
+          Sign Up
+        </button>
+      </form>
     </section>
   );
 }
@@ -345,69 +346,26 @@ function ReviewPage() {
 }
 
 function TenantReviewsPage() {
-  const [reviews, setReviews] = useState([]);
+  const { role } = useRole();
 
-  const fetchReviews = async () => {
-    const q = query(collection(db, "reviews"), where("role", "==", "owner")); // Fetch reviews of owners
-    const querySnapshot = await getDocs(q);
-    const all = [];
-    querySnapshot.forEach(doc => all.push(doc.data()));
-    setReviews(all);
-  };
+  if (role !== "tenant") {
+    return <p>Access denied. Only tenants can view this page.</p>;
+  }
 
-  useEffect(() => {
-    fetchReviews();
-  }, []);
-
-  return (
-    <section className="review-page">
-      <h2>Owner and Flat Reviews</h2>
-      <p>Read reviews about owners and flats</p>
-      <div className="review-list">
-        {reviews.map((r, idx) => (
-          <div key={idx} className="card">
-            <p className="font-bold">{r.address}</p>
-            <p>{r.review}</p>
-            {r.proof && <p className="text-sm text-gray-500">Proof: {r.proof}</p>}
-          </div>
-        ))}
-      </div>
-    </section>
-  );
+  // Fetch and display reviews about owners
+  return <div>Tenant Reviews Page</div>;
 }
 
 function OwnerReviewsPage() {
-  const [reviews, setReviews] = useState([]);
+  const { role } = useRole();
 
-  const fetchReviews = async () => {
-    const q = query(collection(db, "reviews"), where("role", "==", "tenant")); // Fetch reviews of tenants
-    const querySnapshot = await getDocs(q);
-    const all = [];
-    querySnapshot.forEach(doc => all.push(doc.data()));
-    setReviews(all);
-  };
+  if (role !== "owner") {
+    return <p>Access denied. Only owners can view this page.</p>;
+  }
 
-  useEffect(() => {
-    fetchReviews();
-  }, []);
-
-  return (
-    <section className="review-page">
-      <h2>Tenant Reviews</h2>
-      <p>Read reviews about tenants</p>
-      <div className="review-list">
-        {reviews.map((r, idx) => (
-          <div key={idx} className="card">
-            <p className="font-bold">{r.address}</p>
-            <p>{r.review}</p>
-            {r.proof && <p className="text-sm text-gray-500">Proof: {r.proof}</p>}
-          </div>
-        ))}
-      </div>
-    </section>
-  );
+  // Fetch and display reviews about tenants
+  return <div>Owner Reviews Page</div>;
 }
-
 function ExplorePage() {
   const [reviews, setReviews] = useState([]);
 
@@ -441,39 +399,188 @@ function ExplorePage() {
 }
 
 function DashboardPage() {
+  const navigate = useNavigate(); // Define navigate
+  const { role } = useRole();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState("address");
+  const [results, setResults] = useState([]);
+  const [flats, setFlats] = useState([]);
+
+  const fetchFlats = async () => {
+    try {
+      const q = query(collection(db, "flats"));
+      const querySnapshot = await getDocs(q);
+      const allFlats = [];
+      querySnapshot.forEach((doc) => allFlats.push({ id: doc.id, ...doc.data() }));
+      setFlats(allFlats);
+    } catch (error) {
+      console.error("Error fetching flats:", error);
+    }
+  };
+
+  const handleSearch = () => {
+    const filteredResults = flats.filter((flat) => {
+      if (filter === "address") {
+        return flat.address.toLowerCase().includes(searchQuery.toLowerCase());
+      } else if (filter === "location") {
+        return flat.location.toLowerCase().includes(searchQuery.toLowerCase());
+      } else if (filter === "owner") {
+        return flat.owner.toLowerCase().includes(searchQuery.toLowerCase());
+      }
+      return false;
+    });
+    setResults(filteredResults);
+  };
+
+  useEffect(() => {
+    fetchFlats();
+  }, []);
+
   return (
-    <section className="max-w-4xl mx-auto py-10">
-      <h2 className="text-3xl font-semibold mb-4">Your Dashboard</h2>
-      <img src="/assets/dashboard-image.jpg" alt="Dashboard" className="rounded-lg shadow-lg mb-6" />
-      <p className="text-gray-600 mb-6">Track your reviews, rent history, and upload exit videos</p>
-      <div className="space-y-4">
-        <button className="primary w-full">Upload Exit Video</button>
-        <div className="card">
-          <p className="text-xl font-bold">Trust Score: 84/100</p>
-          <p className="text-sm text-gray-500">Based on verified agreements and uploaded reviews</p>
+    <section className="dashboard-page max-w-6xl mx-auto py-10 px-6">
+      <h2 className="text-4xl font-bold mb-6 text-center">Your Dashboard</h2>
+
+      {/* Options for View or Give Review */}
+      <div className="flex justify-center space-x-4 mb-6">
+        <button
+          className="btn primary"
+          onClick={() => navigate("/review")}
+        >
+          Give Review
+        </button>
+        <button
+          className="btn secondary"
+          onClick={() => navigate("/explore")}
+        >
+          View Reviews
+        </button>
+      </div>
+
+      {/* Search Bar */}
+      <div className="search-bar mb-6">
+        <input
+          type="text"
+          placeholder={`Search by ${filter}`}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="input-field w-full mb-4"
+        />
+        <div className="flex space-x-4">
+          <button
+            className={`btn ${filter === "address" ? "primary" : "secondary"}`}
+            onClick={() => setFilter("address")}
+          >
+            Address
+          </button>
+          <button
+            className={`btn ${filter === "location" ? "primary" : "secondary"}`}
+            onClick={() => setFilter("location")}
+          >
+            Location
+          </button>
+          <button
+            className={`btn ${filter === "owner" ? "primary" : "secondary"}`}
+            onClick={() => setFilter("owner")}
+          >
+            Owner
+          </button>
+          <button className="btn primary" onClick={handleSearch}>
+            Search
+          </button>
         </div>
       </div>
+
+      {/* Search Results */}
+      <div className="results-section">
+        {results.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {results.map((flat) => (
+              <div
+                key={flat.id}
+                className="card p-4 border rounded shadow hover:shadow-lg cursor-pointer"
+                onClick={() => navigate(`/reviews/${flat.id}`)}
+              >
+                <h3 className="text-xl font-bold">{flat.address}</h3>
+                <p>Location: {flat.location}</p>
+                <p>Owner: {flat.owner}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">No results found. Try a different search.</p>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function FlatReviewsPage({ flatId }) {
+  const [reviews, setReviews] = useState([]);
+
+  const fetchReviews = async () => {
+    try {
+      const q = query(collection(db, "reviews"), where("flatId", "==", flatId));
+      const querySnapshot = await getDocs(q);
+      const allReviews = [];
+      querySnapshot.forEach((doc) => allReviews.push(doc.data()));
+      setReviews(allReviews);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, [flatId]);
+
+  return (
+    <section className="review-page">
+      <h2 className="text-3xl font-bold mb-6">Reviews for Flat</h2>
+      {reviews.length > 0 ? (
+        <div className="review-list">
+          {reviews.map((review, idx) => (
+            <div key={idx} className="card p-4 border rounded shadow mb-4">
+              <p className="font-bold">{review.address}</p>
+              <p>{review.review}</p>
+              {review.proof && <p className="text-sm text-gray-500">Proof: {review.proof}</p>}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-gray-500">No reviews available for this flat.</p>
+      )}
     </section>
   );
 }
 
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Define authentication state
+
   return (
     <RoleProvider>
-    <Router>
-      <Routes>
-        <Route path="/" element={<RoleSelectionPage />} />
-        <Route path="/tenant" element={<LandingPage />} />
-        <Route path="/owner" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/try-it-first" element={<TryItFirstPage />} />
-        <Route path="/review" element={<ReviewPage />} />
-        <Route path="/explore" element={<ExplorePage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-      </Routes>
-    </Router>
-  </RoleProvider>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<RoleSelectionPage />} />
+            <Route path="/role-landing" element={<RoleLandingPage />} />
+            <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
+            <Route path="/signup" element={<SignupPage setIsAuthenticated={setIsAuthenticated} />} />
+            <Route path="/try-it-first" element={<TryItFirstPage />} />
+            <Route
+              path="/dashboard"
+              element={isAuthenticated ? <DashboardPage /> : <Navigate to="/login" />}
+            />
+            <Route path="/reviews/:flatId" element={<FlatReviewsPage />} />
+            <Route path="/review" element={<ReviewPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/tenant-reviews" element={<TenantReviewsPage />} />
+            <Route path="/owner-reviews" element={<OwnerReviewsPage />} />
+            <Route path="/tenant" element={<LandingPage />} />
+            <Route path="/owner" element={<LandingPage />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </RoleProvider>
   );
 }
