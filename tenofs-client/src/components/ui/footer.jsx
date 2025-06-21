@@ -1,11 +1,17 @@
-import React from "react";
-
-export const Footer = () => {
+export function Footer() {
   return (
-    <footer className="bg-gray-800 text-white py-4 mt-10">
-      <div className="container mx-auto text-center">
-        <p>&copy; {new Date().getFullYear()} Tenofs. All rights reserved.</p>
-      </div>
+    <footer className="footer">
+      <span
+        style={{
+          fontWeight: 700,
+          fontSize: "1.08rem",
+          letterSpacing: "0.02em",
+          color: "#222",
+          fontFamily: "'Arial Rounded MT Bold', Arial, sans-serif"
+        }}
+      >
+        © 2025 Tenofs. All rights reserved.
+      </span>
     </footer>
   );
-};
+}

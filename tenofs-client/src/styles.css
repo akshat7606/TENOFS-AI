@@ -1,601 +1,290 @@
-/* General Styles */
+/* Animated gradient background for the whole page */
 body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(to bottom, #f3f4f6, #e5e7eb); /* Light gradient background */
-    color: #333; /* Darker text for better contrast */
-    text-align: center;
-    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.1); /* Adds subtle depth */
-  }
-  
-  /* Page Container */
-  .page {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding: 20px;
-  }
+  font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(120deg, #f3f4f6 0%, #ffe082 100%);
+  background-size: 200% 200%;
+  animation: gradientMove 8s ease-in-out infinite;
+  color: #222;
+  text-align: center;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.1);
+}
 
-/* General Input Styles */
-.page .form input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-  
-  .page .form input:focus {
-    border-color: #2575fc;
-    box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
-    outline: none;
-  }
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-/* Password Field Styles */
-.password-field {
+/* Fancy animated heading underline */
+h2, .page h2 {
+  font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: #222;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 12px #ffe08255;
   position: relative;
-}
-
-.password-field input {
-  width: 100%;
-  padding: 10px; /* Match padding with other input boxes */
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1rem;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.password-field .eye-icon {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
-  /* Role Selection Page */
-/* Center the Role Selection Page */
-.role-selection-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #f9fafb;
-  text-align: center;
-}
-
-/* Buttons */
-.btn {
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn.primary {
-  background-color: #4f46e5;
-  color: white;
-}
-
-.btn.secondary {
-  background-color: #e5e7eb;
-  color: #111827;
-}
-
-.btn:hover {
-  opacity: 0.9;
-}
-  
-  .role-selection-page h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .role-selection-page p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-  }
-  
-  .role-selection-page button {
-    padding: 10px 20px;
-    margin: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #2575fc;
-    color: white;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  .role-selection-page button:hover {
-    background-color: white;
-    color: #2575fc;
-  }
-
-/* Landing Page */
-.landing-page {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(to bottom, #6287d1, #ffffff); /* Light gradient background */
-    color: #333; /* Darker text for better contrast */
-    text-align: center;
-    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.1); /* Adds subtle depth */
-  }
-
-.landing-page img {
-  max-width: 50%;
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-/* Buttons */
-/* Buttons */
-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 30px 0; /* Increased vertical gap between buttons */
-    width: 200px;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  button.primary {
-    background-color: #2575fc;
-    color: white;
-  }
-  
-  button.primary:hover {
-    background-color: white;
-    color: #2575fc;
-  }
-  
-  button.outline {
-    background-color: transparent;
-    border: 20px solid #2575fc;
-    color: #2575fc;
-  }
-  
-  button.outline:hover {
-    background-color: white;
-    color: #2575fc;
-  }
-  
-  button.ghost {
-    background-color: transparent;
-    color: white;
-  }
-  
-  button.ghost:hover {
-    background-color: white;
-    color: #6a11cb;
-  }
-  /* General Page Styles */
-.page {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(to bottom, #f3f4f6, #e5e7eb); /* Light gradient background */
-    color: #333; /* Darker text for better contrast */
-    text-align: center;
-    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.1); /* Adds subtle depth */
-  }
-  
-  .page h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .page p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-  }
-  
-  .page .form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 300px;
-  }
-  
-  .page .form input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  .page .form button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 10px 0;
-    width: 100%;
-    background-color: #2575fc;
-    color: white;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  .page .form button:hover {
-    background-color: white;
-    color: #2575fc;
-  }
-  /* Review Page */
-.review-page {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(to bottom, #f3f4f6, #e5e7eb); /* Light gradient background */
-    color: #333;
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .review-page h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .review-page p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-  }
-  
-  .review-page .form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 400px;
-  }
-  
-  .review-page .form input,
-  .review-page .form textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  .review-page .form textarea {
-    height: 100px;
-  }
-  
-  .review-page .form button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 10px 0;
-    width: 100%;
-    background-color: #2575fc;
-    color: white;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  .review-page .form button:hover {
-    background-color: white;
-    color: #2575fc;
-  }
-  
-  .review-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .review-list .card {
-    width: 90%;
-    max-width: 600px;
-    margin-bottom: 20px;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  /* Flat Details Section */
-.flat-details {
-    margin-top: 20px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    width: 100%;
-    text-align: left;
-  }
-  
-  .flat-details p {
-    margin: 5px 0;
-    font-size: 1rem;
-  }
-
-  header {
-    position: relative;
-  }
-  
-  header nav {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-  }
-  
-  footer {
-    background-color: #1a202c;
-    color: white;
-    padding: 1rem 0;
-    margin-top: 2rem;
-    text-align: center;
-  }
-
-  /* Center the content vertically and horizontally */
-.page.role-landing-page {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    text-align: center;
-  }
-  
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
-    border-radius: 0.5rem;
-    text-decoration: none;
-  }
-  
-  .btn.primary {
-    background-color: #4f46e5;
-    color: white;
-  }
-  
-  .btn.primary:hover {
-    background-color: #4338ca;
-  }
-  
-  .btn.secondary {
-    background-color: #e5e7eb;
-    color: #111827;
-  }
-  
-  .btn.secondary:hover {
-    background-color: #d1d5db;
-  }
-
-  /* Center the login page content */
-.page.login-page {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  text-align: center;
-}
-
-/* Style for input fields */
-.input-field {
-  width: 50%;
-  padding: 0.75rem;
-  margin: 0.5rem 0;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-}
-
-/* Center the login page content */
-.page.login-page {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  text-align: center;
-}
-
-/* Style the form */
-.login-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 400px;
-}
-
-/* Style for labels */
-.form-label {
-  align-self: flex-start;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-/* Style for input fields */
-.input-field {
-  width: 100%;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-}
-
-/* Style for buttons */
-.btn {
   display: inline-block;
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  cursor: pointer;
-  margin-bottom: 1rem;
+  padding-bottom: 0.3em;
+}
+h2::after, .page h2::after {
+  content: "";
+  display: block;
+  width: 60%;
+  height: 4px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, #f5c518 0%, #4f46e5 100%);
+  border-radius: 2px;
+  animation: underlineGlow 2s infinite alternate;
+}
+@keyframes underlineGlow {
+  0% { box-shadow: 0 0 8px #f5c51844; }
+  100% { box-shadow: 0 0 16px #4f46e577; }
 }
 
-.btn.primary {
-  background-color: #4f46e5;
-  color: white;
-}
-
-.btn.primary:hover {
-  background-color: #4338ca;
-}
-
-.btn.secondary {
-  background-color: #e5e7eb;
-  color: #111827;
-}
-
-.btn.secondary:hover {
-  background-color: #d1d5db;
-}
-
-/* Center the signup page content */
-.page.signup-page {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  text-align: center;
-}
-
-/* Style the signup form */
-.signup-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 400px;
-}
-
-/* Style for labels */
-.form-label {
-  align-self: flex-start;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-/* Style for input fields */
-.input-field {
-  width: 100%;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-}
-
-/* Style for buttons */
-.btn {
-  display: inline-block;
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  cursor: pointer;
-  margin-bottom: 1rem;
-}
-
-.btn.primary {
-  background-color: #4f46e5;
-  color: white;
-}
-
-.btn.primary:hover {
-  background-color: #4338ca;
-}
-
-/* Search Bar */
-.search-bar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.input-field {
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.btn.primary {
-  background-color: #4f46e5;
-  color: white;
-}
-
-.btn.secondary {
-  background-color: #e5e7eb;
-  color: #111827;
-}
-
+/* Glassmorphism Card Effect */
 .card {
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  background-color: white;
-  transition: box-shadow 0.3s ease;
+  position: relative;
+  background: rgba(255,255,255,0.85);
+  border-radius: 18px;
+  padding: 24px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.10);
+  backdrop-filter: blur(6px);
+  border: 1.5px solid rgba(245,197,24,0.12);
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
 }
-
 .card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 32px 0 rgba(31,38,135,0.18);
+  transform: translateY(-2px) scale(1.01);
 }
-/* Buttons for View and Give Review */
-.btn.primary {
-  background-color: #4f46e5;
-  color: white;
-}
-
-.btn.secondary {
-  background-color: #e5e7eb;
-  color: #111827;
+.card > * {
+  position: relative;
+  z-index: 1;
 }
 
-.btn {
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
+/* Input fields */
+.input-field, .page .form input, .page .form textarea {
+  font-size: 1.08rem;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1.5px solid #e0e0e0;
+  margin-bottom: 14px;
+  font-family: inherit;
+  background: rgba(255,255,255,0.95);
+  color: #222;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border 0.18s, box-shadow 0.18s;
+}
+.input-field:focus {
+  border-color: #f5c518;
+  outline: none;
+  background: #fffde7;
+  box-shadow: 0 0 12px #f5c51855;
+}
+
+/* Consistent Input Fields for login/signup */
+.input-field,
+.page .form input,
+.page .form textarea {
   font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1.5px solid #d1d5db;
+  margin-bottom: 12px;
+  font-family: inherit;
+  background: #fff;
+  color: #222;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border 0.18s, box-shadow 0.18s;
 }
 
-.btn:hover {
-  opacity: 0.9;
+.input-field:focus,
+.page .form input:focus,
+.page .form textarea:focus {
+  border-color: #f5c518;
+  outline: none;
+  background: #fffde7;
+  box-shadow: 0 0 8px #f5c51833;
+}
+
+/* Review list and rating */
+.review-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.review-list strong {
+  font-size: 1.15rem;
+  color: #222;
+}
+.review-list div {
+  font-size: 1.05rem;
+  color: #444;
+}
+.review-list .rating {
+  color: #b78600;
+  font-weight: 700;
+  font-size: 1.08rem;
+}
+
+/* Subtle floating shapes for extra fanciness */
+body::before, body::after {
+  content: "";
+  position: fixed;
+  z-index: 0;
+  border-radius: 50%;
+  opacity: 0.15;
+  pointer-events: none;
+}
+body::before {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #f5c518 0%, transparent 70%);
+  top: -100px;
+  left: -100px;
+  animation: float1 12s ease-in-out infinite alternate;
+}
+body::after {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #4f46e5 0%, transparent 70%);
+  bottom: -80px;
+  right: -80px;
+  animation: float2 10s ease-in-out infinite alternate;
+}
+@keyframes float1 {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(40px) scale(1.1); }
+}
+@keyframes float2 {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-30px) scale(1.05); }
+}
+
+/* Center all content in the body and add vertical spacing */
+body, .app-container, .landing-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 40px; /* space above footer */
+}
+
+/* Footer always at the very bottom */
+.footer {
+  width: 100%;
+  padding: 18px 0 10px 0;
+  background: rgba(255,255,255,0.85);
+  color: #444;
+  font-size: 1rem;
+  text-align: center;
+  border-top: 1px solid #eee;
+  margin-top: auto;
+}
+
+/* Header styles (not fixed, scrolls with page) */
+.header {
+  background: rgba(255,255,255,0.97);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 18px 0 14px 0;
+  text-align: center;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 0.03em;
+  /* No position: fixed; so it scrolls with the page */
+}
+
+/* Make login/signup input boxes smaller and centered */
+.login-form,
+.signup-form {
+  width: 100%;
+  max-width: 320px;
+  margin: 40px auto 0 auto;
+  padding: 24px 20px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 24px 0 rgba(31,38,135,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Smaller input boxes for login/signup */
+.login-form .input-field,
+.signup-form .input-field {
+  font-size: 1rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1.5px solid #d1d5db;
+  margin-bottom: 14px;
+  background: #fff;
+  width: 90%;
+  max-width: 240px;
+  box-sizing: border-box;
+}
+
+/* Make secondary button on signup page look like a link and more visible */
+.btn.secondary {
+  background: transparent;
+  color: #4f46e5;
+  border: none;
+  text-decoration: underline;
+  font-weight: 600;
+  width: 100%;
+  margin-top: 18px;
+  padding: 10px 0;
+  box-shadow: none;
+  transition: color 0.18s, background 0.18s;
+}
+
+.btn.secondary:hover,
+.btn.secondary:focus {
+  color: #222;
+  background: #f3f4f6;
+  text-decoration: underline;
+}
+
+.btn,
+button,
+input[type="submit"] {
+  font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 10px 28px;
+  border: none;
+  cursor: pointer;
+  margin: 0 4px;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: background 0.18s, box-shadow 0.18s, transform 0.15s;
+  outline: none;
+  display: inline-block;
+  background: #f5c518;
+  color: #222;
+}
+
+.btn:hover,
+button:hover,
+input[type="submit"]:hover {
+  background: #ffe082;
+  color: #222;
+  box-shadow: 0 0 12px #f5c51855;
+  transform: scale(1.03);
 }

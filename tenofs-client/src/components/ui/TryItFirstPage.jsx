@@ -1,32 +1,46 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRole } from "../../App";
 
 function TryItFirstPage() {
   const { role } = useRole();
+  const navigate = useNavigate();
 
   return (
     <section className="page try-page">
       <h2>Try Without Signup</h2>
       <p>Explore the features as a {role}</p>
       <div>
-        {role === "Tenant" ? (
+        {role === "tenant" && (
           <>
-            <Link to="/review">
-              <button className="primary">Give a Review for Owner</button>
-            </Link>
-            <Link to="/explore">
-              <button className="primary">See Reviews of Owners</button>
-            </Link>
+            <button
+              className="btn"
+              onClick={() => navigate("/login")}
+            >
+              Give a Review for Owner / Flat
+            </button>
+            <button
+              className="btn"
+              onClick={() => navigate("/owner-reviews")}
+            >
+              See Reviews of Owners / Flat
+            </button>
           </>
-        ) : (
+        )}
+        {role === "owner" && (
           <>
-            <Link to="/review">
-              <button className="primary">Give a Review for Tenant</button>
-            </Link>
-            <Link to="/explore">
-              <button className="primary">See Reviews of Tenants</button>
-            </Link>
+            <button
+              className="btn"
+              onClick={() => navigate("/login")}
+            >
+              Give a Review for Tenant
+            </button>
+            <button
+              className="btn"
+              onClick={() => navigate("/tenant-reviews")}
+            >
+              See Reviews of Tenants
+            </button>
           </>
         )}
       </div>

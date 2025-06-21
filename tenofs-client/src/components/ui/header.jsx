@@ -1,33 +1,30 @@
-import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export const Header = ({ isAuthenticated, setIsAuthenticated }) => {
+export function Header() {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    setIsAuthenticated(false); // Reset authentication state
-    navigate("/"); // Redirect to role selection
-  };
-
   return (
-    <header className="bg-purple-600 text-white py-4 shadow-md">
-      <div className="container mx-auto flex justify-between items-center px-4">
-        <h1 className="text-2xl font-bold">
-          <Link to="/">Tenofs</Link>
-        </h1>
-        <nav className="flex space-x-4">
-          {isAuthenticated ? (
-            <>
-              <Link to="/dashboard" className="hover:underline">
-                Dashboard
-              </Link>
-              <button onClick={handleLogout} className="hover:underline">
-                Logout
-              </button>
-            </>
-          ) : null}
-        </nav>
-      </div>
+    <header className="header" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px" }}>
+      <img
+        src="/landing-image.jpg"
+        alt="Tenofs Logo"
+        style={{ height: "36px", width: "36px", objectFit: "cover", borderRadius: "6px" }}
+      />
+      <span
+        style={{
+          fontWeight: 800,
+          fontSize: "1.5rem",
+          color: "#222",
+          fontFamily: "'Arial Rounded MT Bold', Arial, sans-serif",
+          cursor: "pointer"
+        }}
+        onClick={() => navigate("/")}
+        tabIndex={0}
+        role="button"
+        aria-label="Go to landing page"
+      >
+        TENOFS
+      </span>
     </header>
   );
-};
+}

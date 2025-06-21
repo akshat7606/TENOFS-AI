@@ -7,13 +7,18 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import './styles.css';
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import TryItFirstPage from "./components/ui/TryItFirstPage"; // Update the path as needed
 import { Layout } from "./components/ui/layout";
 import { Navigate } from "react-router-dom";
 import { Header } from "./components/ui/header"; // Use named import
+import { Footer } from "./components/ui/footer"; // Adjust the path if needed
 import LandingPage from "./components/ui/LandingPage"; // Adjust the path if necessary // Adjust the path if necessary
 import RoleLandingPage from "./components/ui/RoleLandingPage"; // Adjust the path if necessary// Import the new page
+import ReviewPage from "./components/ui/ReviewPage";
+import ExplorePage from "./components/ui/ExplorePage";
+import DashboardPage from "./components/ui/DashboardPage"; // Import the new page
+import MyReviewPage from "./components/ui/MyReviewPage";
 
 // Firebase config
 const firebaseConfig = {
@@ -29,6 +34,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+export { db };
 
 
 function RoleSelectionPage() {
@@ -116,7 +122,7 @@ function LoginPage({ setIsAuthenticated }) {
       <h2 className="text-center text-2xl font-bold mb-6">Login</h2>
       <form onSubmit={handleLogin} className="login-form">
         <label htmlFor="email" className="form-label">
-          Email
+          {/* Email */}
         </label>
         <input
           id="email"
@@ -128,7 +134,7 @@ function LoginPage({ setIsAuthenticated }) {
           className="input-field"
         />
         <label htmlFor="password" className="form-label">
-          Password
+          {/* Password */}
         </label>
         <input
           id="password"
@@ -142,13 +148,17 @@ function LoginPage({ setIsAuthenticated }) {
         <button type="submit" className="btn primary">
           Login
         </button>
-        <button
-          type="button"
-          onClick={() => navigate("/signup")}
-          className="btn secondary"
-        >
-          Sign Up
-        </button>
+        <div style={{ marginTop: "16px", textAlign: "center" }}>
+      <span>Don't have an account? </span>
+      <button
+        type="button"
+        onClick={() => navigate("/signup")}
+        className="btn"
+        style={{ padding: "6px 18px", fontSize: "1rem", display: "inline-block" }}
+      >
+        Sign Up
+      </button>
+        </div>
       </form>
     </section>
   );
@@ -281,69 +291,69 @@ function SignupPage({ setIsAuthenticated }) {
   );
 }
 
-function TryPage() {
-  return (
-    <section className="page try-page">
-      <h2>Try Without Signup</h2>
-      <p>Explore the features</p>
-      <div>
-        <Link to="/review">
-          <button className="primary">Give a Review</button>
-        </Link>
-        <Link to="/explore">
-          <button className="primary">See Reviews</button>
-        </Link>
-      </div>
-    </section>
-  );
-}
+// function TryPage() {
+//   return (
+//     <section className="page try-page">
+//       <h2>Try Without Signup</h2>
+//       <p>Explore the features</p>
+//       <div>
+//         <Link to="/review">
+//           <button className="primary">Give a Review</button>
+//         </Link>
+//         <Link to="/explore">
+//           <button className="primary">See Reviews</button>
+//         </Link>
+//       </div>
+//     </section>
+//   );
+// }
 
-function ReviewPage() {
-  const [reviewData, setReviewData] = useState({
-    address: "",
-    review: "",
-    proof: null,
-  });
+// function ReviewPage() {
+//   const [review, setReview] = useState("");
+//   const [address, setAddress] = useState("");
+//   const [owner, setOwner] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await addDoc(collection(db, "reviews"), reviewData);
-      alert("Review submitted successfully!");
-      setReviewData({ address: "", review: "", proof: null });
-    } catch (error) {
-      console.error("Error submitting review:", error);
-      alert("Failed to submit review. Please try again.");
-    }
-  };
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     // Submit review logic here
+//     alert("Review submitted!");
+//   };
 
-  return (
-    <section className="page review-page">
-      <h2>Submit a Review</h2>
-      <p>Provide your feedback about the tenant or owner.</p>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Address*"
-          value={reviewData.address}
-          onChange={(e) => setReviewData({ ...reviewData, address: e.target.value })}
-          required
-        />
-        <textarea
-          placeholder="Your Review*"
-          value={reviewData.review}
-          onChange={(e) => setReviewData({ ...reviewData, review: e.target.value })}
-          required
-        ></textarea>
-        <input
-          type="file"
-          onChange={(e) => setReviewData({ ...reviewData, proof: e.target.files[0] })}
-        />
-        <button type="submit" className="primary">Submit Review</button>
-      </form>
-    </section>
-  );
-}
+//   return (
+//     <section className="page review-page">
+//       <h2 className="text-center text-2xl font-bold mb-6">Give Review</h2>
+//       <form onSubmit={handleSubmit} className="login-form">
+//         <label className="form-label" htmlFor="address">Flat Address</label>
+//         <input
+//           id="address"
+//           className="input-field"
+//           type="text"
+//           value={address}
+//           onChange={e => setAddress(e.target.value)}
+//           required
+//         />
+//         <label className="form-label" htmlFor="owner">Owner Name</label>
+//         <input
+//           id="owner"
+//           className="input-field"
+//           type="text"
+//           value={owner}
+//           onChange={e => setOwner(e.target.value)}
+//           required
+//         />
+//         <label className="form-label" htmlFor="review">Review</label>
+//         <textarea
+//           id="review"
+//           className="input-field"
+//           value={review}
+//           onChange={e => setReview(e.target.value)}
+//           required
+//         />
+//         <button type="submit" className="btn primary">Submit Review</button>
+//       </form>
+//     </section>
+//   );
+// }
 
 function TenantReviewsPage() {
   const { role } = useRole();
@@ -366,170 +376,79 @@ function OwnerReviewsPage() {
   // Fetch and display reviews about tenants
   return <div>Owner Reviews Page</div>;
 }
-function ExplorePage() {
-  const [reviews, setReviews] = useState([]);
 
-  const fetchReviews = async () => {
-    const q = query(collection(db, "reviews"));
-    const querySnapshot = await getDocs(q);
-    const all = [];
-    querySnapshot.forEach(doc => all.push(doc.data()));
-    setReviews(all);
-  };
+// function ExplorePage() {
+//   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    fetchReviews();
-  }, []);
+//   // Dummy reviews for illustration
+//   const reviews = [
+//     { address: "123 Main St", owner: "John Doe", review: "Great experience!" },
+//     { address: "456 Park Ave", owner: "Jane Smith", review: "Very helpful owner." }
+//   ];
 
-  return (
-    <section className="review-page">
-      <h2>Explore Reviews</h2>
-      <p>Read reviews from other tenants and owners</p>
-      <div className="review-list">
-        {reviews.map((r, idx) => (
-          <div key={idx} className="card">
-            <p className="font-bold">{r.address}</p>
-            <p>{r.review}</p>
-            {r.proof && <p className="text-sm text-gray-500">Proof: {r.proof}</p>}
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
+//   const filtered = reviews.filter(
+//     r =>
+//       r.address.toLowerCase().includes(search.toLowerCase()) ||
+//       r.owner.toLowerCase().includes(search.toLowerCase())
+//   );
 
-function DashboardPage() {
-  const navigate = useNavigate(); // Define navigate
-  const { role } = useRole();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState("address");
-  const [results, setResults] = useState([]);
-  const [flats, setFlats] = useState([]);
+//   return (
+//     <section className="page login-page">
+//       <h2 className="text-center text-2xl font-bold mb-6">View Reviews</h2>
+//       <form className="login-form" onSubmit={e => e.preventDefault()}>
+//         <input
+//           className="input-field"
+//           type="text"
+//           placeholder="Search by address or owner"
+//           value={search}
+//           onChange={e => setSearch(e.target.value)}
+//         />
+//       </form>
+//       <div className="review-list" style={{ width: "100%", maxWidth: 400, margin: "0 auto" }}>
+//         {filtered.length === 0 && <p>No reviews found.</p>}
+//         {filtered.map((r, i) => (
+//           <div key={i} className="card" style={{ marginBottom: 16 }}>
+//             <strong>{r.address}</strong>
+//             <div>Owner: {r.owner}</div>
+//             <div>{r.review}</div>
+//           </div>
+//         ))}
+//       </div>
+//     </section>
+//   );
+// }
 
-  const fetchFlats = async () => {
-    try {
-      const q = query(collection(db, "flats"));
-      const querySnapshot = await getDocs(q);
-      const allFlats = [];
-      querySnapshot.forEach((doc) => allFlats.push({ id: doc.id, ...doc.data() }));
-      setFlats(allFlats);
-    } catch (error) {
-      console.error("Error fetching flats:", error);
-    }
-  };
 
-  const handleSearch = () => {
-    const filteredResults = flats.filter((flat) => {
-      if (filter === "address") {
-        return flat.address.toLowerCase().includes(searchQuery.toLowerCase());
-      } else if (filter === "location") {
-        return flat.location.toLowerCase().includes(searchQuery.toLowerCase());
-      } else if (filter === "owner") {
-        return flat.owner.toLowerCase().includes(searchQuery.toLowerCase());
-      }
-      return false;
-    });
-    setResults(filteredResults);
-  };
-
-  useEffect(() => {
-    fetchFlats();
-  }, []);
-
-  return (
-    <section className="dashboard-page max-w-6xl mx-auto py-10 px-6">
-      <h2 className="text-4xl font-bold mb-6 text-center">Your Dashboard</h2>
-
-      {/* Options for View or Give Review */}
-      <div className="flex justify-center space-x-4 mb-6">
-        <button
-          className="btn primary"
-          onClick={() => navigate("/review")}
-        >
-          Give Review
-        </button>
-        <button
-          className="btn secondary"
-          onClick={() => navigate("/explore")}
-        >
-          View Reviews
-        </button>
-      </div>
-
-      {/* Search Bar */}
-      <div className="search-bar mb-6">
-        <input
-          type="text"
-          placeholder={`Search by ${filter}`}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="input-field w-full mb-4"
-        />
-        <div className="flex space-x-4">
-          <button
-            className={`btn ${filter === "address" ? "primary" : "secondary"}`}
-            onClick={() => setFilter("address")}
-          >
-            Address
-          </button>
-          <button
-            className={`btn ${filter === "location" ? "primary" : "secondary"}`}
-            onClick={() => setFilter("location")}
-          >
-            Location
-          </button>
-          <button
-            className={`btn ${filter === "owner" ? "primary" : "secondary"}`}
-            onClick={() => setFilter("owner")}
-          >
-            Owner
-          </button>
-          <button className="btn primary" onClick={handleSearch}>
-            Search
-          </button>
-        </div>
-      </div>
-
-      {/* Search Results */}
-      <div className="results-section">
-        {results.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {results.map((flat) => (
-              <div
-                key={flat.id}
-                className="card p-4 border rounded shadow hover:shadow-lg cursor-pointer"
-                onClick={() => navigate(`/reviews/${flat.id}`)}
-              >
-                <h3 className="text-xl font-bold">{flat.address}</h3>
-                <p>Location: {flat.location}</p>
-                <p>Owner: {flat.owner}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-gray-500">No results found. Try a different search.</p>
-        )}
-      </div>
-    </section>
-  );
-}
+// function DashboardPage() {
+//   const navigate = useNavigate();
+//   return (
+//     <section className="dashboard-page">
+//       <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
+//       <button className="btn" onClick={() => navigate("/review")}>
+//         Give Review
+//       </button>
+//       <button className="btn" onClick={() => navigate("/explore")}>
+//         View Reviews
+//       </button>
+//     </section>
+//   );
+// }
 
 function FlatReviewsPage({ flatId }) {
   const [reviews, setReviews] = useState([]);
 
-  const fetchReviews = async () => {
-    try {
-      const q = query(collection(db, "reviews"), where("flatId", "==", flatId));
-      const querySnapshot = await getDocs(q);
-      const allReviews = [];
-      querySnapshot.forEach((doc) => allReviews.push(doc.data()));
-      setReviews(allReviews);
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const q = query(collection(db, "reviews"), where("flatId", "==", flatId));
+        const querySnapshot = await getDocs(q);
+        const allReviews = [];
+        querySnapshot.forEach((doc) => allReviews.push(doc.data()));
+        setReviews(allReviews);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
     fetchReviews();
   }, [flatId]);
 
@@ -559,28 +478,35 @@ export default function App() {
 
   return (
     <RoleProvider>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<RoleSelectionPage />} />
-            <Route path="/role-landing" element={<RoleLandingPage />} />
-            <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
-            <Route path="/signup" element={<SignupPage setIsAuthenticated={setIsAuthenticated} />} />
-            <Route path="/try-it-first" element={<TryItFirstPage />} />
-            <Route
-              path="/dashboard"
-              element={isAuthenticated ? <DashboardPage /> : <Navigate to="/login" />}
-            />
-            <Route path="/reviews/:flatId" element={<FlatReviewsPage />} />
-            <Route path="/review" element={<ReviewPage />} />
-            <Route path="/explore" element={<ExplorePage />} />
-            <Route path="/tenant-reviews" element={<TenantReviewsPage />} />
-            <Route path="/owner-reviews" element={<OwnerReviewsPage />} />
-            <Route path="/tenant" element={<LandingPage />} />
-            <Route path="/owner" element={<LandingPage />} />
-          </Routes>
-        </Layout>
-      </Router>
+      <div className="app-container">
+        <Router>
+        <Header /> {/* Fixed header at the top */}
+          <div className="main-content">
+            <Layout>
+              <Routes>
+                <Route path="/" element={<RoleSelectionPage />} />
+                <Route path="/role-landing" element={<RoleLandingPage />} />
+                <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
+                <Route path="/signup" element={<SignupPage setIsAuthenticated={setIsAuthenticated} />} />
+                <Route path="/try-it-first" element={<TryItFirstPage />} />
+                <Route
+                  path="/dashboard"
+                  element={isAuthenticated ? <DashboardPage /> : <Navigate to="/login" />}
+                />
+                <Route path="/my-reviews" element={<MyReviewPage />} />
+                <Route path="/reviews/:flatId" element={<FlatReviewsPage />} />
+                <Route path="/review" element={<ReviewPage />} />
+                <Route path="/explore" element={<ExplorePage />} />
+                <Route path="/tenant-reviews" element={<TenantReviewsPage />} />
+                <Route path="/owner-reviews" element={<OwnerReviewsPage />} />
+                <Route path="/tenant" element={<LandingPage />} />
+                <Route path="/owner" element={<LandingPage />} />
+              </Routes>
+            </Layout>
+          </div>
+          <Footer /> {/* Footer always at the bottom */}
+        </Router>
+      </div>
     </RoleProvider>
   );
 }
